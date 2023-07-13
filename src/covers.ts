@@ -1,64 +1,113 @@
-import anime from "animejs"
+import { animate, scroll } from "motion"
 
-const setupCovers = (element: HTMLDivElement) => {
-  const coverSrcs = [
-    "https://i.discogs.com/xhJFQosTXp2tJ1v06R6ZF-RPOOhF6LC4XBf8KvrfNMk/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNTY2/OTczLTE1MDAwMzI4/MjEtNjI0My5qcGVn.jpeg",
-    "https://i.discogs.com/xhJFQosTXp2tJ1v06R6ZF-RPOOhF6LC4XBf8KvrfNMk/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNTY2/OTczLTE1MDAwMzI4/MjEtNjI0My5qcGVn.jpeg",
-    "https://i.discogs.com/xhJFQosTXp2tJ1v06R6ZF-RPOOhF6LC4XBf8KvrfNMk/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNTY2/OTczLTE1MDAwMzI4/MjEtNjI0My5qcGVn.jpeg",
-    "https://i.discogs.com/xhJFQosTXp2tJ1v06R6ZF-RPOOhF6LC4XBf8KvrfNMk/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNTY2/OTczLTE1MDAwMzI4/MjEtNjI0My5qcGVn.jpeg",
-    "https://i.discogs.com/xhJFQosTXp2tJ1v06R6ZF-RPOOhF6LC4XBf8KvrfNMk/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNTY2/OTczLTE1MDAwMzI4/MjEtNjI0My5qcGVn.jpeg",
-    "https://i.discogs.com/xhJFQosTXp2tJ1v06R6ZF-RPOOhF6LC4XBf8KvrfNMk/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNTY2/OTczLTE1MDAwMzI4/MjEtNjI0My5qcGVn.jpeg",
-    "https://i.discogs.com/xhJFQosTXp2tJ1v06R6ZF-RPOOhF6LC4XBf8KvrfNMk/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNTY2/OTczLTE1MDAwMzI4/MjEtNjI0My5qcGVn.jpeg",
-    "https://i.discogs.com/xhJFQosTXp2tJ1v06R6ZF-RPOOhF6LC4XBf8KvrfNMk/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNTY2/OTczLTE1MDAwMzI4/MjEtNjI0My5qcGVn.jpeg",
-    "https://i.discogs.com/xhJFQosTXp2tJ1v06R6ZF-RPOOhF6LC4XBf8KvrfNMk/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNTY2/OTczLTE1MDAwMzI4/MjEtNjI0My5qcGVn.jpeg",
-    "https://i.discogs.com/xhJFQosTXp2tJ1v06R6ZF-RPOOhF6LC4XBf8KvrfNMk/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNTY2/OTczLTE1MDAwMzI4/MjEtNjI0My5qcGVn.jpeg",
-    "https://i.discogs.com/xhJFQosTXp2tJ1v06R6ZF-RPOOhF6LC4XBf8KvrfNMk/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNTY2/OTczLTE1MDAwMzI4/MjEtNjI0My5qcGVn.jpeg",
-    "https://i.discogs.com/xhJFQosTXp2tJ1v06R6ZF-RPOOhF6LC4XBf8KvrfNMk/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNTY2/OTczLTE1MDAwMzI4/MjEtNjI0My5qcGVn.jpeg",
-    "https://i.discogs.com/xhJFQosTXp2tJ1v06R6ZF-RPOOhF6LC4XBf8KvrfNMk/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNTY2/OTczLTE1MDAwMzI4/MjEtNjI0My5qcGVn.jpeg",
-  ]
+interface Cover {
+  src: string
+  title: string
+  artist: string
+}
 
-  for (const coverSrc of coverSrcs) {
-    const container = document.createElement("div")
-    const img = document.createElement("img")
-    img.src = coverSrc
-    img.className = "cover-img"
-    container.className = "cover-container"
-    container.appendChild(img)
-    element.appendChild(container)
+type Axis = "x" | "y"
+
+const zip = <X, Y>(xs: X[], ys: Y[]): [X, Y][] => xs.map((x, i) => [x, ys[i]])
+
+const setup = ($container: HTMLDivElement, covers: Cover[]) => {
+  for (const cover of covers) {
+    const $wrapper = document.createElement("div")
+    const $img = document.createElement("img")
+    $img.src = cover.src
+    $img.className = "cover-img"
+
+    const $meta = document.createElement("div")
+    const $title = document.createElement("span")
+    const $artist = document.createElement("span")
+
+    $title.innerText = cover.title
+    $artist.innerText = cover.artist
+    $meta.className = "cover-meta"
+    $meta.appendChild($title)
+    $meta.appendChild($artist)
+
+    $wrapper.className = "cover-container"
+    $wrapper.appendChild($img)
+    $wrapper.appendChild($meta)
+    $container.appendChild($wrapper)
   }
 }
 
-const animate = (element: HTMLDivElement, middle: number) => {
-  const covers = element.querySelectorAll<HTMLImageElement>(".cover-img")
-  const containers =
-    element.querySelectorAll<HTMLImageElement>(".cover-container")
+const coverflow = ($container: HTMLDivElement, covers: Cover[], axis: Axis) => {
+  setup($container, covers)
 
-  // let middle = Math.floor(covers.length / 2)
-  console.log(middle)
-  for (const [i, cover] of covers.entries()) {
-    const container = containers[i]
-    container.style.zIndex = `-${Math.abs(middle - i)}`
+  $container.style.overflow = axis === "x" ? "scroll hidden" : "hidden scroll"
+  $container.style.scrollSnapType = `${axis} mandatory`
+  $container.style.flexDirection = axis === "x" ? "row" : "column"
+  $container.style.padding = axis === "x" ? "0 50%" : "100% 0"
 
-    const x =
-      i === middle
-        ? 0
-        : i <= middle
-        ? (middle - i) * 150 + 500
-        : (middle - i) * 150 - 500
+  const $images = $container.querySelectorAll<HTMLImageElement>(".cover-img")
+  const $wrappers =
+    $container.querySelectorAll<HTMLDivElement>(".cover-container")
 
-    anime({
-      targets: container,
-      translateX: x,
-    })
+  const width = axis === "x" ? window.innerWidth / 4 : window.innerHeight / 3.5
 
-    anime({
-      targets: cover,
-      // translateX: x,
-      rotateY: -(middle - i) * 5 - Math.sign(middle - i) * 10,
-      perspective: 1000,
-      // translateZ: -Math.abs(middle - i) * 10,
-    })
+  const $covers = zip(Array.from($images), Array.from($wrappers))
+
+  for (const [i, [$image, $wrapper]] of $covers.entries()) {
+    $image.width = width
+    $image.height = width
+    $image.style.width = `${width}px`
+
+    $wrapper.style.margin =
+      axis === "x" ? `0 ${-0.1 * width}px` : `${-0.1 * width}px 0`
+
+    scroll(
+      animate($wrapper, {
+        zIndex: ["1", "1000", "1"],
+      }),
+      {
+        container: document.querySelector<HTMLDivElement>("#covers")!,
+        target: $wrapper,
+        offset: [0, 1],
+        axis,
+      }
+    )
+
+    const transformation =
+      axis === "x"
+        ? [
+            `translateX(${-0.1 * width}px) rotateY(40deg) `,
+            `translateX(${-0.3 * width}px) rotateY(40deg) `,
+            `translateX(${0 * width}px) scale(1.2)`,
+            `translateX(${0.3 * width}px) rotateY(-40deg) `,
+            `translateX(${0.1 * width}px) rotateY(-40deg) `,
+          ]
+        : [
+            `translateY(${-0.1 * width}px) rotateX(-45deg) `,
+            `translateY(${-0.25 * width}px) rotateX(-45deg) `,
+            `translateY(${0 * width}px) scale(1.1)`,
+            `translateY(${0.25 * width}px) rotateX(45deg) `,
+            `translateY(${0.1 * width}px) rotateX(45deg) `,
+          ]
+
+    scroll(
+      animate($image, {
+        transform: transformation,
+      }),
+      {
+        container: document.querySelector<HTMLDivElement>("#covers")!,
+        target: $image,
+        axis,
+      }
+    )
   }
+
+  axis === "x"
+    ? $container.scrollBy(
+        $container.scrollWidth / 2 - $container.clientWidth / 2,
+        0
+      )
+    : $container.scrollBy(
+        0,
+        $container.scrollHeight / 2 - $container.clientHeight / 2
+      )
 }
 
-export { animate, setupCovers }
+export { coverflow }
