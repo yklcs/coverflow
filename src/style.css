@@ -43,17 +43,17 @@ body {
 }
 
 .cover-container {
-  border: 1px solid red;
   display: inline-block;
   perspective: 1000px;
   perspective-origin: center;
   overflow: visible;
   scroll-snap-align: center;
   line-height: 0;
+  z-index: 100000;
 }
 
 .cover-img {
-  box-shadow: 0 0 20px #000000dd;
+  box-shadow: 0 0 20px #000000ff;
 }
 
 div.cover-meta {

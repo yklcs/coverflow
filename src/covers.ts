@@ -34,10 +34,16 @@ const setup = ($container: HTMLDivElement, covers: Cover[]) => {
   }
 }
 
+const logistic = (midpoint: number, steepness: number) => (x: number) =>
+  -1 + 2 / (1 + Math.exp(-steepness * (x - midpoint)))
+
+const bell = (midpoint: number, steepness: number) => (x: number) =>
+  Math.exp(-steepness * (x - midpoint) ** 2)
+
 const coverflow = ($container: HTMLDivElement, covers: Cover[], axis: Axis) => {
   setup($container, covers)
 
-  const width = axis === "x" ? window.innerWidth / 4 : window.innerHeight / 3.5
+  const width = axis === "x" ? window.innerWidth / 4 : window.innerHeight / 3
 
   $container.style.overflow = axis === "x" ? "scroll hidden" : "hidden scroll"
   $container.style.scrollSnapType = `${axis} mandatory`
@@ -55,8 +61,8 @@ const coverflow = ($container: HTMLDivElement, covers: Cover[], axis: Axis) => {
     $image.height = width
     $image.style.width = `${width}px`
 
-    // $wrapper.style.margin =
-    // axis === "x" ? `0 ${-0.1 * width}px` : `${-0.1 * width}px 0`
+    $wrapper.style.margin =
+      axis === "x" ? `0 ${-0.25 * width}px` : `${-0.25 * width}px 0`
 
     scroll(
       animate($wrapper, {
@@ -70,65 +76,20 @@ const coverflow = ($container: HTMLDivElement, covers: Cover[], axis: Axis) => {
       }
     )
 
-    const transformation =
-      axis === "x"
-        ? [
-            `translateX(${-0.1 * width}px) rotateY(40deg) `,
-            `translateX(${-0.3 * width}px) rotateY(40deg) `,
-            `translateX(${0 * width}px) scale(1.2)`,
-            `translateX(${0.3 * width}px) rotateY(-40deg) `,
-            `translateX(${0.1 * width}px) rotateY(-40deg) `,
-          ]
-        : [
-            `translateY(${-0.1 * width}px) rotateX(-45deg) `,
-            `translateY(${-0.25 * width}px) rotateX(-45deg) `,
-            `translateY(${0 * width}px) scale(1.1)`,
-            `translateY(${0.25 * width}px) rotateX(45deg) `,
-            `translateY(${0.1 * width}px) rotateX(45deg) `,
-          ]
-
-    const $debug = document.createElement("span")
-    $debug.style.zIndex = "10000"
-    $debug.style.position = "absolute"
-    $debug.style.left = "0"
-    $debug.style.top = "-1em"
-    $wrapper.appendChild($debug)
-
     scroll(
-      ({ x }) => {
-        // const translate = (0.5 - x.progress) * -0.1 * width
-        const rotate = (0.5 - x.progress) * 80
-        const translate =
-          // -0.2 * width * Math.sin((((0.5 - x.progress) * 3) / 2) * 2 * Math.PI)
-          3 * width * (0.5 - x.progress) ** 3
+      ({ x, y }) => {
+        const progress = axis === "x" ? x.progress : y.progress
+        const rotate =
+          60 * -logistic(0.5, 10)(progress) * (axis === "x" ? 1 : -1)
+        const t = 200 * bell(0.5, 1000)(progress)
+        const translate = 0.5 * width * logistic(0.5, 20)(progress)
 
-        $debug.innerHTML = `${x.progress}`
-        $image.style.transform = `translateX(${translate}px) rotateY(${rotate}deg)`
-        // if (x.progress < 0.45) {
-        //   $image.style.transform = `translateX(${-0.3 * width}px) rotateY(${
-        //     (x.progress - 0.5) * 40
-        //   }deg)`
-        // } else if (x.progress > 0.55) {
-        //   $image.style.transform = `translateX(${0.3 * width}px) rotateY(${
-        //     (x.progress - 0.5) * 40
-        //   }deg)`
-        // } else {
-        //   $image.style.transform = `translateX(${0 * width}px) rotateY(0deg)`
-        // }
+        $image.style.transform = `translateZ(${t}px) translate${
+          axis === "x" ? "X" : "Y"
+        }(${translate}px) rotate${axis === "x" ? "Y" : "X"}(${rotate}deg)`
       },
       { container: $container, target: $image, axis }
     )
-
-    // scroll(
-    //   animate($image, {
-    //     transform: transformation,
-    //   }),
-    //   {
-    //     container: document.querySelector<HTMLDivElement>("#covers")!,
-    //     target: $image,
-    //     axis,
-    //   }
-    // )
   }
 
   axis === "x"
