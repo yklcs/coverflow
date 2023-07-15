@@ -43,6 +43,7 @@ body {
 }
 
 .cover-container {
+  border: 1px solid red;
   display: inline-block;
   perspective: 1000px;
   perspective-origin: center;
