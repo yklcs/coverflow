@@ -17,21 +17,30 @@ const setup = ($container: HTMLDivElement, covers: Cover[]) => {
     $img.src = cover.src
     $img.className = "cover-img"
 
-    const $meta = document.createElement("div")
-    const $title = document.createElement("span")
-    const $artist = document.createElement("span")
-
-    $title.innerText = cover.title
-    $artist.innerText = cover.artist
-    $meta.className = "cover-meta"
-    $meta.appendChild($title)
-    $meta.appendChild($artist)
-
-    $wrapper.className = "cover-container"
+    $wrapper.className = "cover-wrapper"
     $wrapper.appendChild($img)
-    $wrapper.appendChild($meta)
     $container.appendChild($wrapper)
   }
+
+  const $meta = document.createElement("div")
+  const $title = document.createElement("span")
+  const $artist = document.createElement("span")
+  const $home = document.createElement("a")
+
+  $title.innerText = "A Moon Shaped Pool"
+  $artist.innerText = "Radiohead"
+  $home.innerText = "←"
+
+  $meta.id = "meta"
+  $title.id = "meta-title"
+  $artist.id = "meta-artist"
+  $home.id = "meta-home"
+
+  $home.href = "/"
+  $meta.appendChild($title)
+  $meta.appendChild($artist)
+  $meta.appendChild($home)
+  $container.appendChild($meta)
 }
 
 const logistic = (midpoint: number, steepness: number) => (x: number) =>
@@ -40,21 +49,25 @@ const logistic = (midpoint: number, steepness: number) => (x: number) =>
 const bell = (midpoint: number, steepness: number) => (x: number) =>
   Math.exp(-steepness * (x - midpoint) ** 2)
 
-const coverflow = ($container: HTMLDivElement, covers: Cover[], axis: Axis) => {
+const coverflow = ($root: HTMLDivElement, covers: Cover[], axis: Axis) => {
+  $root.innerHTML = `
+    <div id="covers">
+    </div>
+  `
+  const $container = document.querySelector<HTMLDivElement>("#covers")!
+  $container.classList.add(`axis-${axis}`)
   setup($container, covers)
 
   const width = axis === "x" ? window.innerWidth / 4 : window.innerHeight / 3
 
-  $container.style.overflow = axis === "x" ? "scroll hidden" : "hidden scroll"
-  $container.style.scrollSnapType = `${axis} mandatory`
-  $container.style.flexDirection = axis === "x" ? "row" : "column"
-  $container.style.padding = axis === "x" ? `0 50%` : "100% 0"
-
   const $images = $container.querySelectorAll<HTMLImageElement>(".cover-img")
   const $wrappers =
-    $container.querySelectorAll<HTMLDivElement>(".cover-container")
+    $container.querySelectorAll<HTMLDivElement>(".cover-wrapper")
 
   const $covers = zip(Array.from($images), Array.from($wrappers))
+
+  const $title = document.querySelector("#meta-title")!
+  const $artist = document.querySelector("#meta-artist")!
 
   for (const [i, [$image, $wrapper]] of $covers.entries()) {
     $image.width = width
@@ -66,10 +79,10 @@ const coverflow = ($container: HTMLDivElement, covers: Cover[], axis: Axis) => {
 
     scroll(
       animate($wrapper, {
-        zIndex: ["1", "1000", "1"],
+        zIndex: ["1", "100", "1"],
       }),
       {
-        container: document.querySelector<HTMLDivElement>("#covers")!,
+        container: $container,
         target: $wrapper,
         offset: [0, 1],
         axis,
@@ -87,6 +100,11 @@ const coverflow = ($container: HTMLDivElement, covers: Cover[], axis: Axis) => {
         $image.style.transform = `translateZ(${t}px) translate${
           axis === "x" ? "X" : "Y"
         }(${translate}px) rotate${axis === "x" ? "Y" : "X"}(${rotate}deg)`
+
+        if (0.4 <= progress && progress <= 0.6) {
+          $title.innerHTML = covers[i].title
+          $artist.innerHTML = covers[i].artist
+        }
       },
       { container: $container, target: $image, axis }
     )

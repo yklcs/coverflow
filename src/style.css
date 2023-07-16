@@ -1,12 +1,10 @@
 :root {
   -webkit-font-smoothing: antialiased;
-
   -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
-  background-color: #242424;
+
+  background-color: #202020;
   color: rgba(255, 255, 255, 0.87);
 
-  color-scheme: light dark;
   font-weight: 400;
   line-height: 1.5;
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -17,14 +15,12 @@
 
 body {
   margin: 0;
-  min-width: 320px;
 }
 
 #app {
   display: flex;
   justify-content: center;
   align-items: center;
-  perspective: 1000px;
   width: 100vw;
   height: 100vh;
   height: 100svh;
@@ -34,35 +30,69 @@ body {
 #covers {
   display: flex;
   align-items: center;
-  perspective: 1000px;
+  /* justify-content: center; */
   box-sizing: border-box;
   width: 100%;
-  height: fit-content;
+  height: 100vh;
   height: 100svh;
   white-space: nowrap;
 }
+#covers.axis-x {
+  flex-direction: row;
+  padding: 0 50vw;
+  padding: 0 50svw;
+  overflow: scroll hidden;
+  scroll-snap-type: x mandatory;
+}
+#covers.axis-y {
+  flex-direction: column;
+  padding: 50vh 0;
+  padding: 50svh 0;
+  overflow: hidden scroll;
+  scroll-snap-type: y mandatory;
+}
 
-.cover-container {
-  display: inline-block;
+.cover-wrapper {
   perspective: 1000px;
-  perspective-origin: center;
   overflow: visible;
   scroll-snap-align: center;
   line-height: 0;
-  z-index: 100000;
 }
 
 .cover-img {
-  box-shadow: 0 0 20px #000000ff;
+  will-change: transform;
+  box-shadow: 0 0 18px #000000ff;
 }
 
-div.cover-meta {
+#meta {
   display: flex;
-  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
   flex-direction: column;
-  opacity: 0;
+  align-items: center;
+  transform: translateZ(0);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-sizing: border-box;
+  padding: 0.5rem;
+  width: 100vw;
+  line-height: 1.3;
 }
 
-.cover-container.focused > div.cover-meta {
-  opacity: 1;
+#meta-title {
+  font-weight: 500;
+}
+
+#meta-home {
+  position: absolute;
+  left: 0;
+  padding: 1rem;
+  font-size: 1.2em;
+}
+
+@media screen and (max-width: 700px) {
+  #meta {
+    font-size: 14px;
+  }
 }
